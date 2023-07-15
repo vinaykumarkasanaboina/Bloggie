@@ -1,4 +1,4 @@
-﻿namespace Bloggie.Web.Models.ViewModels
+﻿namespace Bloggie.Models.ViewModels
 {
     public class AddTagsRequest
     {
