@@ -1,17 +1,30 @@
-﻿@model Bloggie.Models.ViewModels.AddTagsRequest
+﻿@model Bloggie.Models.ViewModels.AddTagRequest
+@{
+}
 
 
-<h1>AddTags-AdminFunctionality</h1>
-<form method="post">
-    <div class="mb-3">
-        <label for="exampleInputName" class="form-label">Name</label>
-        <input type="text" class="form-control" id="Name" asp-for="Name" >
-        
+<div class="bg-secondary bg-opacity-10 py-2">
+    <div class="container">
+        <h1>Add New Tag - Admin Functionality</h1>
     </div>
-    <div class="mb-3">
-        <label for="exampleInputDisplayName1" class="form-label">DisplayName</label>
-        <input type="text" class="form-control" id="DisplayName" asp-for="DisplayName"> 
-    </div>
-    
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+</div>
+
+<div class="container py-5">
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" asp-for="Name" required />
+            <span class="text-danger" asp-validation-for="Name"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Display Name</label>
+            <input type="text" class="form-control" id="displayName" asp-for="DisplayName" required />
+            <span class="text-danger" asp-validation-for="DisplayName"></span>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-dark">Submit</button>
+        </div>
+    </form>
+</div>

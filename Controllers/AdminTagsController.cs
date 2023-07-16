@@ -1,18 +1,19 @@
-﻿using Bloggie.Data;
-using Bloggie.Models.Domain;
+﻿using Bloggie.Models.Domain;
 using Bloggie.Models.ViewModels;
+using Bloggie.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bloggie.Controllers
+namespace Bloggie.Web.Controllers
 {
+
     public class AdminTagsController : Controller
     {
-        private BloggieDbContext db;
-        public AdminTagsController(BloggieDbContext bloggieDbContext)
-        {
-            db = bloggieDbContext;
-        }
+        private readonly ITagRepository tagRepository;
 
+        public AdminTagsController(ITagRepository tagRepository)
+        {
+            this.tagRepository = tagRepository;
+        }
 
         [HttpGet]
         public IActionResult Add()
@@ -21,29 +22,98 @@ namespace Bloggie.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(AddTagsRequest addTagsRequest)
+        [ActionName("Add")]
+        public async Task<IActionResult> Add(AddTagRequest addTagRequest)
         {
+           
 
+            if (ModelState.IsValid == false)
+            {
+                return View();
+            }
+
+            // Mapping AddTagRequest to Tag domain model
             var tag = new Tag
             {
-                Name = addTagsRequest.Name,
-                DisplayName = addTagsRequest.DisplayName,
+                Name = addTagRequest.Name,
+                DisplayName = addTagRequest.DisplayName
             };
 
-            db.Tags.Add(tag);
-            db.SaveChanges();
-                
+            await tagRepository.AddAsync(tag);
 
             return RedirectToAction("List");
         }
 
+        [HttpGet]
+        [ActionName("List")]
+        public async Task<IActionResult> List()
+        {
+            // use dbContext to read the tags
+            var tags = await tagRepository.GetAllAsync();
+
+            return View(tags);
+        }
 
         [HttpGet]
-        public IActionResult List()
+        public async Task<IActionResult> Edit(Guid id)
         {
+            var tag = await tagRepository.GetAsync(id);
 
-            var tag = db.Tags.ToList();
-            return View(tag);
+            if (tag != null)
+            {
+                var editTagRequest = new EditTagRequest
+                {
+                    Id = tag.Id,
+                    Name = tag.Name,
+                    DisplayName = tag.DisplayName
+                };
+
+                return View(editTagRequest);
+            }
+
+            return View(null);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditTagRequest editTagRequest)
+        {
+            var tag = new Tag
+            {
+                Id = editTagRequest.Id,
+                Name = editTagRequest.Name,
+                DisplayName = editTagRequest.DisplayName
+            };
+
+            var updatedTag = await tagRepository.UpdateAsync(tag);
+
+            if (updatedTag != null)
+            {
+                // Show success notification
+            }
+            else
+            {
+                // Show error notification
+            }
+
+            return RedirectToAction("Edit", new { id = editTagRequest.Id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(EditTagRequest editTagRequest)
+        {
+            var deletedTag = await tagRepository.DeleteAsync(editTagRequest.Id);
+
+            if (deletedTag != null)
+            {
+                // Show success notification
+                return RedirectToAction("List");
+            }
+
+            // Show an error notification
+            return RedirectToAction("Edit", new { id = editTagRequest.Id });
+        }
+
+
+       
     }
 }
