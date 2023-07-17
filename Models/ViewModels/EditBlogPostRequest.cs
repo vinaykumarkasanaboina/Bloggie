@@ -1,8 +1,8 @@
-﻿using Bloggie.Models.Domain;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Bloggie.Models.Domain
+namespace Bloggie.Models.ViewModels
 {
-    public class BlogPost
+    public class EditBlogPostRequest
     {
         public Guid Id { get; set; }
         public string Heading { get; set; }
@@ -15,10 +15,10 @@ namespace Bloggie.Models.Domain
         public string Author { get; set; }
         public bool Visible { get; set; }
 
-        // Navigation property
-        public ICollection<Tag> Tags { get; set; }
 
-        public ICollection<BlogPostLike> Likes { get; set; }
-        public ICollection<BlogPostComment> Comments { get; set; }
+        // Display tags
+        public IEnumerable<SelectListItem> Tags { get; set; }
+        // Collect Tag
+        public string[] SelectedTags { get; set; } = Array.Empty<string>();
     }
 }

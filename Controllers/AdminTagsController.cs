@@ -3,7 +3,7 @@ using Bloggie.Models.ViewModels;
 using Bloggie.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bloggie.Web.Controllers
+namespace Bloggie.Controllers
 {
 
     public class AdminTagsController : Controller
